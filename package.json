@@ -1,0 +1,8 @@
+{
+  "name": "skyvault",
+  "version": "0.0.1",
+  "description": "a personal cloud storage application",
+  "main": "index.js",
+  "author": "tanchohang",
+  "license": "MIT"
+}
