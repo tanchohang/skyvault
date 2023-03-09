@@ -1,12 +1,15 @@
 version: '3.7'
 services:
   skyvault-api:
+    container_name: skyvault-api
     restart: unless-stopped
     build: ./
   skyvault-client:
+    container_name: skyvault-clent
     restart: unless-stopped
     build: ../skyvault-client/
   nginx:
+    container_name: skyvault-nginx
     restart: unless-stopped
     build: ./nginx
     ports:
