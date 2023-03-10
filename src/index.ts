@@ -19,6 +19,19 @@ app.use(express.json());
 app.use(cors());
 app.use(express.static('public/uploads'));
 
+///routes
+
+app.use(authRoutes);
+app.use(fileRoutes);
+
+app.use((req, res, next) => {
+  const error = new Error('Not Found');
+
+  next(error);
+});
+
+app.use(errorHandler);
+
 mongodb
   .then(() => {
     app.listen(3500);
@@ -26,10 +39,3 @@ mongodb
   .catch((err) => {
     console.error(err, 'mongodb Error');
   });
-
-///routes
-
-app.use(authRoutes);
-app.use(fileRoutes);
-
-app.use(errorHandler);

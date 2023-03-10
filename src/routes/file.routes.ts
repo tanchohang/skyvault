@@ -5,12 +5,13 @@ import { v4 as uuidv4 } from 'uuid';
 import projectController from '../controller/project.controller.js';
 import uploadController from '../controller/upload.controller.js';
 import { authenticatedUser } from '../middleware/auth.middleware.js';
+import { isProject } from '../service/project.service.js';
 
 const router = Router();
 
 const upload = multer({
   storage: multer.diskStorage({
-    destination: (req, file, cb) => {
+    destination: async (req, file, cb) => {
       if (req.body.project === undefined) {
         cb(new Error('project field is undefined:multer/destination'), null);
       }
@@ -21,9 +22,20 @@ const upload = multer({
 
       //checking if subfolder (inside project) is not undefined(path field is present)
       if (req.body.path != undefined && req.body.project !== undefined) {
-        const folder = `uploads/${req.user_id}/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
-        fs.mkdirSync(folder, { recursive: true });
-        cb(null, folder);
+        //checking if provided project is a valid project for the given user
+        const isValidProject = await isProject(
+          req.user_id,
+          req.body.project
+        ).catch((e) => {
+          e.message = 'provide a valid project for the file';
+          cb(e, null);
+        });
+
+        if (isValidProject) {
+          const folder = `uploads/${req.user_id}/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
+          fs.mkdirSync(folder, { recursive: true });
+          cb(null, folder);
+        }
       }
     },
     filename: (req, file, cb) => {

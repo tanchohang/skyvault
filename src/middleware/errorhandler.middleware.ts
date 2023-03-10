@@ -14,7 +14,12 @@ export const errorHandler = (
 
     res.status(500).json({ error: error.message, extra: 'multer failed' });
   }
-  res
-    .status(500)
-    .json({ error: error.message, handler: 'error handler middleware' });
+  //Not Found
+  if (error.message === 'Not Found') {
+    res.status(404).json({ error: error.message });
+  }
+  res.status(500).json({
+    error: error.message ? error.message : 'internal server error',
+    handler: 'error handler middleware',
+  });
 };
