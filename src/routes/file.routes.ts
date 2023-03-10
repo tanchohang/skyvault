@@ -16,12 +16,7 @@ const upload = multer({
         cb(new Error('project field is undefined:multer/destination'), null);
       }
 
-      if (req.body.path === undefined) {
-        cb(new Error('path field is undefined:multer/destination'), null);
-      }
-
-      //checking if subfolder (inside project) is not undefined(path field is present)
-      if (req.body.path != undefined && req.body.project !== undefined) {
+      if (req.body.project !== undefined) {
         //checking if provided project is a valid project for the given user
         const isValidProject = await isProject(
           req.user_id,
@@ -32,7 +27,12 @@ const upload = multer({
         });
 
         if (isValidProject) {
-          const folder = `uploads/${req.user_id}/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
+          let folder = `uploads/${req.user_id}/${req.body.project}`; //folder where file will be uploaded
+
+          //checking if subfolder (inside project) is not undefined(path field is present)
+          if (req.body.path !== undefined) {
+            folder = `uploads/${req.user_id}/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
+          }
           fs.mkdirSync(folder, { recursive: true });
           cb(null, folder);
         }
