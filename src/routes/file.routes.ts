@@ -11,13 +11,19 @@ const router = Router();
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => {
+      if (req.body.project === undefined) {
+        cb(new Error('project field is undefined:multer/destination'), null);
+      }
+
+      if (req.body.path === undefined) {
+        cb(new Error('path field is undefined:multer/destination'), null);
+      }
+
       //checking if subfolder (inside project) is not undefined(path field is present)
-      if (req.body.path != undefined) {
+      if (req.body.path != undefined && req.body.project !== undefined) {
         const folder = `uploads/${req.user_id}/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
         fs.mkdirSync(folder, { recursive: true });
         cb(null, folder);
-      } else {
-        cb(new Error('path field is undefined:multer/destination'), null);
       }
     },
     filename: (req, file, cb) => {
@@ -67,11 +73,11 @@ router.post('/projects', authenticatedUser, projectController.createProject);
 
 router.get('/file/:id', authenticatedUser, uploadController.serveFile);
 
-router.post(
-  '/upload',
-  [authenticatedUser, publicUpload.single('file')],
-  uploadController.uploadFile
-);
+// router.post(
+//   '/upload',
+//   [authenticatedUser, publicUpload.single('file')],
+//   uploadController.uploadFile
+// );
 
 router.post(
   '/upload',

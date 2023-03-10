@@ -24,17 +24,18 @@ const publicUploadFile = async (req: Request, res: Response) => {
     res.status(200).json({ file });
   } catch (err) {
     //delete uploaded file because database save failed
+    console.log(req.file.path, 'path');
+    // if (req.file.path != undefined) {
+    //   unlinkFile(req.file.path);
+    // }
 
-    unlinkFile(req.file.path);
-
-    console.log('error deleting uploaded file');
     res.status(500).json({ errors: err.errors });
   }
 };
 
 ////Private uploads
 const uploadFile = async (req: Request, res: Response) => {
-  /* 
+  /* agendas of this function::::
     # multer uploads file.
     # save file to the database--handle error when saving--error may include db validation errors server error errors.
     # incase db saving error occurs delete uploaded file 
@@ -58,10 +59,13 @@ const uploadFile = async (req: Request, res: Response) => {
     res.status(200).json({ file });
   } catch (err) {
     //delete uploaded file because database save failed
+    // check for file incase file is not sent to server or else req.file.path gives error
+    if (req.file) {
+      unlinkFile(req.file.path);
+    } else {
+      err.errors = 'File is required';
+    }
 
-    unlinkFile(req.file.path);
-
-    console.log('error deleting uploaded file');
     res.status(500).json({ errors: err.errors });
   }
 };
