@@ -26,6 +26,7 @@ RUN yarn build
 
 # Expose the listening port
 EXPOSE 3500
+EXPOSE 80
 
 # Run container as non-root (unprivileged) user
 # The node user is provided in the Node.js Alpine base image

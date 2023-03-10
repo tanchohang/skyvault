@@ -6,6 +6,9 @@ import fileRoutes from './routes/file.routes.js';
 
 import mongodb from './utilities/mongodb.js';
 import { MulterError } from 'multer';
+import { errorHandler } from './middleware/errorhandler.middleware.js';
+import { authenticatedUser } from './middleware/auth.middleware.js';
+import { File, IFileDocument } from './model/file.model.js';
 
 dotenv.config();
 
@@ -14,13 +17,14 @@ const app: Application = express();
 //middleware
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public/uploads'));
 
 mongodb
   .then(() => {
     app.listen(3500);
   })
   .catch((err) => {
-    console.error(err);
+    console.error(err, 'mongodb Error');
   });
 
 ///routes
@@ -28,13 +32,4 @@ mongodb
 app.use(authRoutes);
 app.use(fileRoutes);
 
-app.use((error, req: Request, res: Response, next: NextFunction) => {
-  //MulterError handling
-  if (error instanceof MulterError) {
-    if (error.code === 'LIMIT_FILE_SIZE')
-      res.status(500).json({ error: error.message });
-
-    res.status(500).json({ error: error.message, extra: 'multer failed' });
-  }
-  res.status(500).json({ error: error.message });
-});
+app.use(errorHandler);

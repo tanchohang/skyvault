@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { File } from '../model/file.model.js';
 import { Project } from '../model/project.model.js';
 
-export const getAllProject = async (req: Request, res: Response) => {
+const getAllProject = async (req: Request, res: Response) => {
   try {
     const projects = await Project.find({ user: req.user_id });
     res.status(200).json({ projects });
@@ -11,7 +11,7 @@ export const getAllProject = async (req: Request, res: Response) => {
   }
 };
 
-export const getProjectFiles = async (req: Request, res: Response) => {
+const getProjectFiles = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const files = await File.find({ project: id });
@@ -21,7 +21,7 @@ export const getProjectFiles = async (req: Request, res: Response) => {
   }
 };
 
-export const createProject = async (req: Request, res: Response) => {
+const createProject = async (req: Request, res: Response) => {
   const { name } = req.body;
 
   try {
@@ -31,3 +31,5 @@ export const createProject = async (req: Request, res: Response) => {
     res.status(500).json({ errors: err.errors });
   }
 };
+
+export default { getAllProject, getProjectFiles, createProject };

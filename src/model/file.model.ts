@@ -1,7 +1,8 @@
 import { Schema, model, Types, Document } from 'mongoose';
 
-interface IFileDocument extends Document {
+export interface IFileDocument extends Document {
   path: string;
+  fileName: string;
   originalName: string;
   link?: string;
   mimeType: string;
@@ -15,6 +16,10 @@ const fileSchema = new Schema(
       type: String,
       trim: true,
       required: [true, 'Path must be provided'],
+    },
+    fileName: {
+      type: String,
+      required: [true, 'Filename is required'],
     },
     originalName: {
       type: String,
