@@ -13,7 +13,7 @@ RUN rm /etc/nginx/conf.d/*
 
 # Copy config files
 # *.conf files in conf.d/ dir get included in main config
-# COPY ./default.conf /etc/nginx/conf.d/
+COPY ./default.conf /etc/nginx/conf.d/
 # COPY ./letsencrypt/ /etc/letsencrypt/
 
 
@@ -33,4 +33,4 @@ CMD [ "nginx", "-g", "daemon off;" ]
 # ENTRYPOINT [ "nginx" ]
 
 #Certbot configuration
-# RUN certbot --nginx -n --agree-tos -d tanchohang.dev -d www.tanchohang.dev -m tanchohang@gmail.com
+# RUN certbot --nginx -n --agree-tos -d api.skyvault.tanchohang.dev -d www.api.skyvault.tanchohang.dev -d skyvault.tanchohang.dev -d www.skyvault.tanchohang.dev -m tanchohang@gmail.com
