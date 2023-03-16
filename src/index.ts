@@ -1,16 +1,11 @@
-import dotenv from 'dotenv';
-import express, { Application, NextFunction, Request, Response } from 'express';
+import express, { Application } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import fileRoutes from './routes/file.routes.js';
+import config from './config/index.js';
 
 import mongodb from './utilities/mongodb.js';
-import { MulterError } from 'multer';
 import { errorHandler } from './middleware/errorhandler.middleware.js';
-import { authenticatedUser } from './middleware/auth.middleware.js';
-import { File, IFileDocument } from './model/file.model.js';
-
-dotenv.config();
 
 const app: Application = express();
 
@@ -34,7 +29,10 @@ app.use(errorHandler);
 
 mongodb
   .then(() => {
-    app.listen(3500);
+    app.listen(config.port).on('error', (err) => {
+      console.log(err.message);
+      process.exit(1);
+    });
   })
   .catch((err) => {
     console.error(err, 'mongodb Error');

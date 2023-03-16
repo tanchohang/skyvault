@@ -27,3 +27,5 @@ lerna-debug.log*
 .yarn/install-state.gz
 
 .npm
+
+.DS_Store

@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import { File } from '../model/file.model.js';
 import { unlinkFile } from '../utilities/unlinkFile.js';
 
-const createPublic = async (req: Request, res: Response) => {
+const serveFile = async (req, res) => {
+  const file = await File.find({ user: req.user_id, _id: req.params.id });
+  res.sendFile(file[0].path, { root: `uploads/${req.user_id}` });
+};
+const publicUploadFile = async (req: Request, res: Response) => {
   const { project }: { project: string } = req.body;
 
   try {
@@ -30,7 +34,7 @@ const createPublic = async (req: Request, res: Response) => {
 };
 
 ////Private uploads
-const create = async (req: Request, res: Response) => {
+const uploadFile = async (req: Request, res: Response) => {
   /* agendas of this function::::
     # multer uploads file.
     # save file to the database--handle error when saving--error may include db validation errors server error errors.
@@ -66,13 +70,27 @@ const create = async (req: Request, res: Response) => {
   }
 };
 
-const read = async (req: Request, res: Response) => {
-  const file = await File.find({ user: req.user_id, _id: req.params.id });
-  res.sendFile(file[0].path, { root: `uploads/${req.user_id}` });
+const uploadFiles = async (req: Request, res: Response) => {
+  const { project }: { project: string } = req.body;
+
+  //   try {
+  //     const file = await File.create({
+  //       path: req.file.path,
+  //       originalName: req.file.originalname,
+  //       link: req.headers.origin,
+  //       project: project,
+  //       user: req.user_id,
+  //     });
+
+  // res.status(200).json({ file });
+  //   } catch (err) {
+  //     res.status(500).json({ errors: err.errors });
+  //   }
+  res.status(200).json({ status: 'success' });
 };
 
-const update = async (req: Request, res: Response) => {};
+const uploadMultiField = async (req: Request, res: Response) => {
+  res.status(200).json({ status: 'success' });
+};
 
-const destroy = async (req: Request, res: Response) => {};
-
-export default { createPublic, create, read };
+export default { serveFile, uploadFile, uploadFiles, uploadMultiField };

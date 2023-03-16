@@ -10,3 +10,5 @@ Dockerfile
 docker-compose.yml
 node_modules/
 nginx/
+
+.DS_Store

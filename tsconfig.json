@@ -1,15 +1,26 @@
 {
     "compilerOptions": {
+        "target": "ESNext",
+        "lib": ["ES2017","ESNext.AsyncIterable"],
+
         "module": "NodeNext",
         "moduleResolution": "nodenext",
-        "target": "ESNext",
         "sourceMap": true,
         "outDir": "dist",
-        "typeRoots": ["@types","node_modules/@types"]
+        "typeRoots": ["./src/@types","node_modules/@types"],
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "pretty": true,
+        "allowJs": true,
+        "esModuleInterop": true
         
     },
     "include": ["src/**/*"],
     "ts-node": {
         "esm": true
-    }
+    },
+    
 }
