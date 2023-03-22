@@ -20,8 +20,10 @@ services:
     build: ../skyvault-client/
     environment:
       - GITHUB_TOKEN=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
+      - NEXTAUTH_SECRET=tuem6XJFEhNqw+Jstakc8BFXFiXcaz6NoVHXzs3W6qA=
+      - NEXTAUTH_URL=https://skyvault.tanchohang.com
   nginx:
-    container_name: skyvault-nginx
+    container_name: nginx
     restart: unless-stopped
     build: ./nginx
     ports:
