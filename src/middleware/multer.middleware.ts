@@ -15,14 +15,15 @@ export const uploadMulter = multer({
       const mainFolder = 'uploads';
       const user = req.user_id;
       const project = req.body.project;
+      const filePublic = JSON.parse(req.body.public); //converting to boolean
       let subfolders = req.body.subfolders;
-      console.log(req.body, 'multer');
       if (req.body.project === undefined) {
         cb(Error('Project field is required'), null);
       }
 
       if (await isProject({ uid: user, pid: project })) {
-        const uploadPath = [mainFolder, user, project, subfolders].join('/');
+        let uploadPath;
+        filePublic ? (uploadPath = 'public/uploads') : (uploadPath = [mainFolder, user, project, subfolders].join('/'));
         fs.mkdirSync(uploadPath, { recursive: true });
         cb(null, uploadPath);
       } else {

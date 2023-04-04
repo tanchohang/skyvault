@@ -69,8 +69,6 @@ import * as fileService from '../service/file.service.js';
 //   }
 // };
 
-const uploadPublic = async (req: Request, res: Response) => {};
-
 const upload = async (req: Request, res: Response) => {
   /******
    * if req.files is empty then req escapes multer middleware. so we validate that the project exists for the user and use this phenomena to create new folders.
@@ -80,6 +78,7 @@ const upload = async (req: Request, res: Response) => {
 
   const user = req.user_id;
   const project = req.body.project;
+  const filePublic = req.body.public;
   //saving to database
   try {
     const fileList = req.files as Express.Multer.File[];
@@ -96,18 +95,35 @@ const upload = async (req: Request, res: Response) => {
 
       return res.status(200).json('folder created successfully');
     }
-
-    const tempFileList = fileList.map(
-      (file: Express.Multer.File) =>
-        ({
-          path: file.path,
-          fileName: file.filename,
-          originalName: file.originalname,
-          mimeType: file.mimetype,
-          project: project,
-          user: req.user_id,
-        } as IFile)
-    );
+    let tempFileList;
+    if (filePublic) {
+      tempFileList = fileList.map(
+        (file: Express.Multer.File) =>
+          ({
+            path: file.path,
+            fileName: file.filename,
+            originalName: file.originalname,
+            mimeType: file.mimetype,
+            link: ['http://localhost:3500', file.filename].join('/'),
+            public: true,
+            project: project,
+            user: req.user_id,
+          } as IFile)
+      );
+    } else {
+      tempFileList = fileList.map(
+        (file: Express.Multer.File) =>
+          ({
+            path: file.path,
+            fileName: file.filename,
+            originalName: file.originalname,
+            mimeType: file.mimetype,
+            link: ['files', file.filename].join('/'),
+            project: project,
+            user: req.user_id,
+          } as IFile)
+      );
+    }
 
     const files = await fileService.saveFiles({ files: tempFileList });
     res.status(200).json(files);
@@ -122,13 +138,13 @@ const uploadMultiplefield = async (req: Request, res: Response) => {
 };
 
 const sendPublicFile = async (req: Request, res: Response) => {
-  const file = await File.find({ user: req.user_id, _id: req.params.id });
-  res.sendFile(file[0].path, { root: `uploads/${req.user_id}` });
+  const file = await fileService.sendPublicFile({ id: req.params.id });
+  res.sendFile(file.path, { root: `uploads` });
 };
 
 const sendFile = async (req: Request, res: Response) => {
-  const file = await File.find({ user: req.user_id, _id: req.params.id });
-  res.sendFile(file[0].path, { root: `uploads/${req.user_id}` });
+  const file = await fileService.sendFile({ uid: req.user_id, filename: req.params.filename });
+  res.sendFile(file.path, { root: `uploads/${req.user_id}` });
 };
 
 const readAllFiles = async (req: Request, res: Response) => {
@@ -205,7 +221,6 @@ const emptyTrash = async (req: Request, res: Response) => {
 };
 
 export default {
-  uploadPublic,
   upload,
   uploadMultiplefield,
   sendPublicFile,

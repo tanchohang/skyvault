@@ -7,14 +7,26 @@ export async function isFile(uid: string, pid: string): Promise<boolean> {
   }
   return false;
 }
+export async function sendPublicFile({ id }: { id: string }) {
+  const file = await File.findById(id);
+  return file;
+}
+
+export async function sendFile({ uid, filename }: { uid: string; filename: string }) {
+  const file = await File.findOne({ user: uid, fileName: filename });
+  return file;
+}
+
 export async function getAllFiles({ uid }: { uid: string }): Promise<Array<IFile>> {
   const files = await File.find({ user: uid, archived: false });
   return files;
 }
+
 export async function getAllFileByProject({ uid, pid }: { uid: string; pid: string }): Promise<Array<IFile>> {
   const files = await File.find({ project: pid, user: uid, archived: false });
   return files;
 }
+
 export async function getunTrashed({ uid }: { uid: string }): Promise<Array<IFile>> {
   const files = await File.find({ user: uid, deleted: false });
   return files;

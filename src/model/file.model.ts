@@ -3,9 +3,10 @@ export interface IFile {
   path: string;
   fileName: string;
   originalName: string;
-  link?: string;
+  link: string;
   deleted: boolean;
   archived: boolean;
+  public: boolean;
   mimeType: string;
   project: string;
   user: string;
@@ -25,6 +26,7 @@ const fileSchema = new Schema(
     fileName: {
       type: String,
       required: [true, 'Filename is required'],
+      unique: true,
     },
     originalName: {
       type: String,
@@ -37,6 +39,7 @@ const fileSchema = new Schema(
     link: { type: String, trim: true },
     deleted: { type: Boolean, default: false },
     archived: { type: Boolean, default: false },
+    public: { type: Boolean, default: false },
 
     project: {
       type: Schema.Types.ObjectId,

@@ -4,20 +4,21 @@ import authRoutes from './routes/auth.routes.js';
 import fileRoutes from './routes/file.routes.js';
 import projectRoutes from './routes/project.routes.js';
 import config from './config/index.js';
+import path from 'path';
 
 import mongodb from './utilities/mongodb.js';
 import { errorHandler } from './middleware/errorhandler.middleware.js';
 
 const app: Application = express();
+const __dirname = path.resolve();
 
 //middleware
 app.use(express.json());
 
 app.use(cors());
-app.use(express.static('public/uploads'));
 
+app.use(express.static(path.join(__dirname, 'public/uploads')));
 ///routes
-
 app.use(authRoutes);
 app.use(fileRoutes);
 app.use(projectRoutes);

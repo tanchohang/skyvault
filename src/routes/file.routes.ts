@@ -4,11 +4,12 @@ import { authenticatedUser } from '../middleware/auth.middleware.js';
 import { multiFieldUpload, uploadMulter } from '../middleware/multer.middleware.js';
 
 const router = Router();
-// router.get('/files/:id/:filename', fileController.sendPublicFile);
 
 router.get('/files', authenticatedUser, fileController.readAllFiles);
 
-router.get('/files/:id', authenticatedUser, fileController.sendFile);
+// router.get('/files/:id/:filename', fileController.sendPublicFile);
+
+router.get('/files/:filename', authenticatedUser, fileController.sendFile);
 
 router.get('/files/project/:pid', authenticatedUser, fileController.readFiles);
 
