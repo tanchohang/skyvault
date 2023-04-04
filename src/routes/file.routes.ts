@@ -1,112 +1,31 @@
 import { Router } from 'express';
-import fs from 'fs';
-import multer, { MulterError } from 'multer';
-import { v4 as uuidv4 } from 'uuid';
-import projectController from '../controller/project.controller.js';
-import uploadController from '../controller/upload.controller.js';
+import fileController from '../controller/file.controller.js';
 import { authenticatedUser } from '../middleware/auth.middleware.js';
-import { isProject } from '../service/project.service.js';
+import { multiFieldUpload, uploadMulter } from '../middleware/multer.middleware.js';
 
 const router = Router();
+// router.get('/files/:id/:filename', fileController.sendPublicFile);
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination: async (req, file, cb) => {
-      if (req.body.project === undefined) {
-        cb(new Error('project field is undefined:multer/destination'), null);
-      }
+router.get('/files', authenticatedUser, fileController.readAllFiles);
 
-      if (req.body.project !== undefined) {
-        //checking if provided project is a valid project for the given user
-        const isValidProject = await isProject(
-          req.user_id,
-          req.body.project
-        ).catch((e) => {
-          e.message = 'provide a valid project for the file';
-          cb(e, null);
-        });
+router.get('/files/:id', authenticatedUser, fileController.sendFile);
 
-        if (isValidProject) {
-          let folder = `uploads/${req.user_id}/${req.body.project}`; //folder where file will be uploaded
+router.get('/files/project/:pid', authenticatedUser, fileController.readFiles);
 
-          //checking if subfolder (inside project) is not undefined(path field is present)
-          if (req.body.path !== undefined) {
-            folder = `uploads/${req.user_id}/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
-          }
-          fs.mkdirSync(folder, { recursive: true });
-          cb(null, folder);
-        }
-      }
-    },
-    filename: (req, file, cb) => {
-      const filename = `${uuidv4()}-${file.originalname.split(' ').join('_')}`; //new filename = uuidv4()+original filename
-      cb(null, filename);
-    },
-  }),
-  limits: { fileSize: 1024 * 1024 * 1 },
-});
+router.get('/files/trash/:pid', authenticatedUser, fileController.readTrashedFiles);
 
-const publicUpload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      //checking if subfolder (inside project) is not undefined(path field is present)
-      if (req.body.path != undefined) {
-        const folder = `public/uploads/${req.body.project}/${req.body.path}`; //folder where file will be uploaded
-        fs.mkdirSync(folder, { recursive: true });
-        cb(null, folder);
-      } else {
-        cb(new Error('path field is undefined:multer/destination'), null);
-      }
-    },
-    filename: (req, file, cb) => {
-      const filename = `${uuidv4()}-${file.originalname.split(' ').join('_')}`; //new filename = uuidv4()+original filename
-      cb(null, filename);
-    },
-  }),
-  limits: { fileSize: 1024 * 1024 * 1 },
-});
+router.post('/files', [authenticatedUser, uploadMulter.array('files', 20)], fileController.upload);
 
-const multiFieldUpload = upload.fields([
-  { name: 'primary', maxCount: 5 },
-  { name: 'secondary', maxCount: 5 },
-  { name: 'more', maxCount: 5 },
-  { name: 'even_more', maxCount: 5 },
-]);
+// router.post('/files/multi-field', [authenticatedUser, multiFieldUpload], fileController.uploadMultiplefield);
 
-router.get('/projects', authenticatedUser, projectController.getAllProject);
+router.put('/files/:id', [authenticatedUser, uploadMulter.single('file')], fileController.update);
 
-router.get(
-  '/porjects/:id',
-  authenticatedUser,
-  projectController.getProjectFiles
-);
+router.put('/files/trash/:id', authenticatedUser, fileController.restore);
 
-router.post('/projects', authenticatedUser, projectController.createProject);
+router.delete('/files/trash', authenticatedUser, fileController.emptyTrash);
 
-router.get('/file/:id', authenticatedUser, uploadController.serveFile);
+router.delete('/files/trash/:id', authenticatedUser, fileController.trash);
 
-// router.post(
-//   '/upload',
-//   [authenticatedUser, publicUpload.single('file')],
-//   uploadController.uploadFile
-// );
-
-router.post(
-  '/upload',
-  [authenticatedUser, upload.single('file')],
-  uploadController.uploadFile
-);
-
-router.post(
-  '/uploads',
-  [authenticatedUser, upload.array('files', 8)],
-  uploadController.uploadFiles
-);
-
-router.post(
-  '/multi-field-upload',
-  [authenticatedUser, multiFieldUpload],
-  uploadController.uploadMultiField
-);
+router.delete('/files/:id', authenticatedUser, fileController.destroy);
 
 export default router;

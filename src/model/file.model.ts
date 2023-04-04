@@ -1,13 +1,18 @@
-import { Schema, model, Types, Document } from 'mongoose';
-
-export interface IFileDocument extends Document {
+import { Schema, model, Document } from 'mongoose';
+export interface IFile {
   path: string;
   fileName: string;
   originalName: string;
   link?: string;
+  deleted: boolean;
+  archived: boolean;
   mimeType: string;
-  project: Types.ObjectId;
-  user: Types.ObjectId;
+  project: string;
+  user: string;
+}
+export interface IFileDocument extends IFile, Document {
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const fileSchema = new Schema(
@@ -30,6 +35,9 @@ const fileSchema = new Schema(
       required: [true, 'mimeType is required'],
     },
     link: { type: String, trim: true },
+    deleted: { type: Boolean, default: false },
+    archived: { type: Boolean, default: false },
+
     project: {
       type: Schema.Types.ObjectId,
       ref: 'project',

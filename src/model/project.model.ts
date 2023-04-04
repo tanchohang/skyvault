@@ -1,18 +1,26 @@
-import { model, Schema, Types, Document } from 'mongoose';
+import { model, Schema, Document } from 'mongoose';
 
-interface IProjectDocument extends Document {
+interface IProject {
   name: string;
-  user: Types.ObjectId;
+  user: string;
+}
+interface IProjectDocument extends IProject, Document {
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const projectSchema = new Schema({
-  name: {
-    type: String,
-    trim: true,
-    required: [true, 'Please enter project name'],
+const projectSchema = new Schema(
+  {
+    name: {
+      type: String,
+      trim: true,
+      required: [true, 'Please enter project name'],
+      //TODO:project name must be unique to the owner's context, for now this is implemented in the service layer better if implemented using mongoose validators
+    },
+    user: { type: Schema.Types.ObjectId, ref: 'user', required: true },
   },
-  user: { type: Schema.Types.ObjectId, ref: 'user', required: true },
-});
+  { timestamps: true }
+);
 
 const Project = model<IProjectDocument>('project', projectSchema);
 

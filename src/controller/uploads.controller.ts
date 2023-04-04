@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { File } from '../model/file.model.js';
-import { unlinkFile } from '../utilities/unlinkFile.js';
+import { unlinkFile } from '../utilities/unlinkFiles.js';
 
 const serveFile = async (req, res) => {
   const file = await File.find({ user: req.user_id, _id: req.params.id });

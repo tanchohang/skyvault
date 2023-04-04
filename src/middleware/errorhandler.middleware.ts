@@ -10,14 +10,15 @@ export const errorHandler = (
   //MulterError handling
   if (error instanceof MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE')
-      res.status(500).json({ error: error.message });
+      res.status(500).json({ error: 'File can only be 10MB' });
+    if (error.code === 'LIMIT_FIELD_COUNT')
+      res
+        .status(500)
+        .json({ error: 'Cant upload more than 20 files per upload ' });
 
-    res.status(500).json({ error: error.message, extra: 'multer failed' });
+    res.status(500).json({ error: error.message, handler: 'multer failed' });
   }
-  //Not Found
-  if (error.message === 'Not Found') {
-    res.status(404).json({ error: error.message });
-  }
+
   res.status(500).json({
     error: error.message ? error.message : 'internal server error',
     handler: 'error handler middleware',

@@ -10,12 +10,8 @@ export function createToken(id: any): string {
 }
 
 export function verifyToken(token: string): string {
-  return jwt.verify(
-    token,
-    process.env.ACCESS_TOKEN_SECRET,
-    (err: any, user: any) => {
-      if (err) throw new Error(err.message + ':jwrUtils/verifyToken()');
-      return user.id;
-    }
-  );
+  return jwt.verify(token.split(' ')[1], process.env.ACCESS_TOKEN_SECRET, (err: any, user: any) => {
+    if (err) throw new Error(err.message + ':jwrUtils/verifyToken()');
+    return user.id;
+  });
 }

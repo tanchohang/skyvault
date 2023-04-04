@@ -5,8 +5,8 @@ export interface IUserDocument extends Document {
   email: string;
   password: string;
   name: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
   profileImg?: string;
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
@@ -26,10 +26,7 @@ const userSchema = new Schema(
       //     },
       //     message: 'Please enter a valid email',
       //   },
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please enter a valid email address',
-      ],
+      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address'],
     },
     password: {
       type: String,
@@ -56,9 +53,7 @@ userSchema.pre('save', async function (next) {
 
 //method to compare hashed password
 
-userSchema.methods.comparePassword = async function (
-  candidatePassword: string
-) {
+userSchema.methods.comparePassword = async function (candidatePassword: string) {
   const user = this as IUserDocument;
   return bcrypt.compare(candidatePassword, user.password);
 };

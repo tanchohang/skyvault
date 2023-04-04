@@ -1,11 +1,15 @@
 import { Request, Response } from 'express';
 import { File } from '../model/file.model.js';
-import { Project } from '../model/project.model.js';
+import * as projectService from '../service/project.service.js';
 
 const getAllProject = async (req: Request, res: Response) => {
+  const projects = await projectService.readAllProject({ uid: req.user_id });
+  res.status(200).json(projects);
+};
+const getProjectByName = async (req: Request, res: Response) => {
   try {
-    const projects = await Project.find({ user: req.user_id });
-    res.status(200).json({ projects });
+    const project = await projectService.getProjectByName({ name: req.params.name });
+    res.status(200).json(project);
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -20,16 +24,43 @@ const getProjectFiles = async (req: Request, res: Response) => {
     res.status(500).json({ error });
   }
 };
-
 const createProject = async (req: Request, res: Response) => {
   const { name } = req.body;
 
   try {
-    let project = await Project.create({ name, user: req.user_id });
-    res.status(200).json({ project });
-  } catch (err) {
-    res.status(500).json({ errors: err.errors });
+    const project = await projectService.createProject({ name, uid: req.user_id });
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(500).json({ error });
   }
 };
 
-export default { getAllProject, getProjectFiles, createProject };
+const updateProject = async (req: Request, res: Response) => {
+  const { name } = req.body;
+  const { id } = req.params;
+  try {
+    const updated = await projectService.updateProject({ uid: req.user_id, pid: id, name: name });
+    res.status(200).json(updated);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const deleteProject = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const deleteProject = await projectService.deleteProject({ uid: req.user_id, pid: id });
+    res.status(200).json(deleteProject);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+export default {
+  getAllProject,
+  getProjectFiles,
+  getProjectByName,
+  createProject,
+  updateProject,
+  deleteProject,
+};
