@@ -4,6 +4,7 @@ import { File, IFile } from '../model/file.model.js';
 import { isProject } from '../service/project.service.js';
 import { unlinkFiles } from '../utilities/unlinkFiles.js';
 import * as fileService from '../service/file.service.js';
+import config from '../config/index.js';
 
 // const createPublic = async (req: Request, res: Response) => {
 //   const { project }: { project: string } = req.body;
@@ -78,7 +79,7 @@ const upload = async (req: Request, res: Response) => {
 
   const user = req.user_id;
   const project = req.body.project;
-  const filePublic = req.body.public;
+  const filePublic = JSON.parse(req.body.public); //converting string to boolean
   //saving to database
   try {
     const fileList = req.files as Express.Multer.File[];
@@ -104,7 +105,7 @@ const upload = async (req: Request, res: Response) => {
             fileName: file.filename,
             originalName: file.originalname,
             mimeType: file.mimetype,
-            link: ['http://localhost:3500', file.filename].join('/'),
+            link: [config.base_url, file.filename].join('/'),
             public: true,
             project: project,
             user: req.user_id,

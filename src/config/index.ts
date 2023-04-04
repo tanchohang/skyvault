@@ -1,7 +1,4 @@
 import dotenv from 'dotenv';
-
-process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-
 const env = dotenv.config();
 
 if (env.error) {
@@ -10,4 +7,6 @@ if (env.error) {
 
 export default {
   port: parseInt(process.env.PORT, 10),
+  env: process.env.NODE_ENV,
+  base_url: process.env.BASE_URL,
 };
