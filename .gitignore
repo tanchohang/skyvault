@@ -2,6 +2,7 @@ node_modules/
 public/
 uploads/
 dist/
+nginx/letsencrypt/
 
 
 .env
