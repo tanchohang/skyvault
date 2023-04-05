@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import fileController from '../controller/file.controller.js';
+import * as fileController from '../controller/file.controller.js';
 import { authenticatedUser } from '../middleware/auth.middleware.js';
 import { uploadMulter } from '../middleware/multer.middleware.js';
 

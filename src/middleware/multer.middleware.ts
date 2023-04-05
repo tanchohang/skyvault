@@ -15,7 +15,7 @@ export const uploadMulter = multer({
       const mainFolder = 'uploads';
       const user = req.user_id;
       const project = req.body.project;
-      const filePublic = JSON.parse(req.body.public); //converting to boolean
+      const filePublic: boolean = req.body.public === 'true'; //converting to boolean
       let subfolders = req.body.subfolders;
       if (req.body.project === undefined) {
         cb(Error('Project field is required'), null);

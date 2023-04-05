@@ -1,5 +1,8 @@
 import dotenv from 'dotenv';
-const env = dotenv.config();
+
+if (process.env.NODE_ENV === 'development') {
+  dotenv.config();
+}
 
 export const config = {
   port: parseInt(process.env.PORT, 10),

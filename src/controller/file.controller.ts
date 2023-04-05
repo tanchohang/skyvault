@@ -1,4 +1,4 @@
-import { Request, Response, Express } from 'express';
+import { Request, Response, Express, NextFunction } from 'express';
 import { mkdirSync } from 'fs';
 import { File, IFile } from '../model/file.model.js';
 import { isProject } from '../service/project.service.js';
@@ -70,18 +70,19 @@ import { config } from '../config/index.js';
 //   }
 // };
 
-const upload = async (req: Request, res: Response) => {
+export const upload = async (req: Request, res: Response, next: NextFunction) => {
   /******
    * if req.files is empty then req escapes multer middleware. so we validate that the project exists for the user and use this phenomena to create new folders.
    * multer first uploades the files and then controller adds them to the database: Incase the database action fails we have to unlink the uploades files.
    *
    * ******/
 
-  const user = req.user_id;
-  const project = req.body.project;
-  const filePublic = JSON.parse(req.body.public); //converting string to boolean
+  //converting string to boolean
   //saving to database
   try {
+    const user = req.user_id;
+    const project = req.body.project;
+    const filePublic = req.body.public === 'true';
     const fileList = req.files as Express.Multer.File[];
     if (fileList === undefined || fileList.length === 0) {
       // no files but subfolders can be created
@@ -128,110 +129,86 @@ const upload = async (req: Request, res: Response) => {
 
     const files = await fileService.saveFiles({ files: tempFileList });
     res.status(200).json(files);
-  } catch (err) {
+  } catch (error) {
     if (req.files) unlinkFiles(req.files as Express.Multer.File[]);
-    res.status(500).json({ error: err.message });
+    next(error);
   }
 };
 
-const uploadMultiplefield = async (req: Request, res: Response) => {
-  res.status(200).json({ msg: 'Upload multiple fields successfully' });
-};
-
-const sendPublicFile = async (req: Request, res: Response) => {
-  const file = await fileService.sendPublicFile({ id: req.params.id });
-  res.sendFile(file.path, { root: `uploads` });
-};
-
-const sendFile = async (req: Request, res: Response) => {
+export const sendFile = async (req: Request, res: Response, next: NextFunction) => {
   const file = await fileService.sendFile({ uid: req.user_id, filename: req.params.filename });
   res.sendFile(file.path, { root: `uploads/${req.user_id}` });
 };
 
-const readAllFiles = async (req: Request, res: Response) => {
+export const readAllFiles = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const files = await fileService.getAllFiles({ uid: req.user_id });
     res.status(200).json(files);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    next(error);
   }
 };
 
-const readFiles = async (req: Request, res: Response) => {
+export const readFiles = async (req: Request, res: Response, next: NextFunction) => {
   const { pid } = req.params;
   try {
     const files = await fileService.getAllFileByProject({ uid: req.user_id, pid });
     res.status(200).json(files);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    next(error);
   }
 };
 
-const readTrashedFiles = async (req: Request, res: Response) => {
+export const readTrashedFiles = async (req: Request, res: Response, next: NextFunction) => {
   const { pid } = req.params;
   try {
     const files = await fileService.getTrashed({ uid: req.user_id });
     res.status(200).json(files);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (error) {
+    next(error);
   }
 };
 
-const update = async (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
   const { name } = req.body;
   try {
     const file = await fileService.updateFile({ uid: req.user_id, id: req.params.id, name });
     res.status(200).json(file);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-const trash = async (req: Request, res: Response) => {
+export const trash = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const trashed = await fileService.trashFile({ id: req.params.id });
     res.status(200).json(trashed);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
-const restore = async (req: Request, res: Response) => {
+export const restore = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const trashed = await fileService.restoreFile({ id: req.params.id });
     res.status(200).json(trashed);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
 
-const destroy = async (req: Request, res: Response) => {
+export const destroy = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const deleted = await fileService.deleteFile({ uid: req.user_id, id: req.params.id });
     res.status(200).json(deleted);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
 };
-const emptyTrash = async (req: Request, res: Response) => {
+export const emptyTrash = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const deleted = await fileService.emptyTrash({ uid: req.user_id });
     res.status(200).json(deleted);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    next(error);
   }
-};
-
-export default {
-  upload,
-  uploadMultiplefield,
-  sendPublicFile,
-  sendFile,
-  readAllFiles,
-  readFiles,
-  readTrashedFiles,
-  update,
-  restore,
-  trash,
-  destroy,
-  emptyTrash,
 };
