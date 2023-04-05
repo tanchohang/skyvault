@@ -20,7 +20,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  logger.info('access_info', { ip_address: req.socket.remoteAddress, method: req.method, path: req.url });
+  logger.info('access_info', { ip_address: req.socket.remoteAddress, method: req.method, path: req.originalUrl });
   next();
 });
 

@@ -3,7 +3,7 @@ import { MulterError } from 'multer';
 import { logger } from '../logger/index.js';
 
 export const errorHandler = (error, req: Request, res: Response, next: NextFunction) => {
-  logger.error(error, { ip_address: req.socket.remoteAddress, method: req.method, path: req.url, user: req.user_id });
+  logger.error(error, { ip_address: req.socket.remoteAddress, method: req.method, path: req.originalUrl, user: req.user_id });
 
   //MulterError handling
   if (error instanceof MulterError) {

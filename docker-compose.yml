@@ -29,6 +29,7 @@ services:
       - NEXTAUTH_SECRET=tuem6XJFEhNqw+Jstakc8BFXFiXcaz6NoVHXzs3W6qA=
       - NEXTAUTH_URL=https://skyvault.tanchohang.dev
       - NODE_ENV=production
+      - NEXT_PUBLIC_NODE_ENV=production
       - BASE_URL=https://skyvault.tanchohang.dev
   nginx:
     container_name: nginx
