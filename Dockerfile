@@ -4,7 +4,7 @@ FROM node:alpine
 WORKDIR /usr/app
 
 # Install PM2 globally
-RUN yarn global add pm2
+# RUN yarn global add pm2
 
 # Copy package.json and package-lock.json before other files
 # Utilise Docker cache to save re-installing dependencies if unchanged
@@ -35,4 +35,4 @@ EXPOSE 80
 USER node
 
 # Run npm start script with PM2 when container starts
-CMD [ "pm2-runtime", "npm", "--", "start" ]
+CMD [ "yarn", "start" ]
