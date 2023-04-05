@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import fileController from '../controller/file.controller.js';
 import { authenticatedUser } from '../middleware/auth.middleware.js';
-import { multiFieldUpload, uploadMulter } from '../middleware/multer.middleware.js';
+import { uploadMulter } from '../middleware/multer.middleware.js';
 
 const router = Router();
 
