@@ -1,4 +1,4 @@
-import express, { Application } from 'express';
+import express, { Application, NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import fileRoutes from './routes/file.routes.js';
@@ -9,6 +9,8 @@ import path from 'path';
 import mongodb from './utilities/mongodb.js';
 import { errorHandler } from './middleware/errorhandler.middleware.js';
 
+import { logger } from './logger/index.js';
+
 const app: Application = express();
 const __dirname = path.resolve();
 
@@ -16,6 +18,11 @@ const __dirname = path.resolve();
 app.use(express.json());
 
 app.use(cors());
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  logger.info('access_info', { ip_address: req.socket.remoteAddress, method: req.method, path: req.url });
+  next();
+});
 
 app.use(express.static(path.join(__dirname, 'public/uploads')));
 ///routes

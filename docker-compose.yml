@@ -17,6 +17,7 @@ services:
     volumes:
       - ./uploads:/usr/app/uploads
       - ./public/uploads:/usr/app/public/uploads
+      - ./errors.log:/usr/app/errors.log
   skyvault-client:
     container_name: skyvault-client
     restart: unless-stopped

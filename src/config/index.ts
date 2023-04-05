@@ -6,6 +6,6 @@ if (process.env.NODE_ENV === 'development') {
 
 export const config = {
   port: parseInt(process.env.PORT, 10),
-  env: process.env.NODE_ENV,
+  env: process.env.NODE_ENV || 'development',
   base_url: process.env.BASE_URL,
 };

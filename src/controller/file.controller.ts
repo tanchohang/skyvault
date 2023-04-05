@@ -77,12 +77,12 @@ export const upload = async (req: Request, res: Response, next: NextFunction) =>
    *
    * ******/
 
-  //converting string to boolean
   //saving to database
   try {
     const user = req.user_id;
     const project = req.body.project;
-    const filePublic = req.body.public === 'true';
+
+    const filePublic = req.body.public === 'true'; //converting string to boolean
     const fileList = req.files as Express.Multer.File[];
     if (fileList === undefined || fileList.length === 0) {
       // no files but subfolders can be created
