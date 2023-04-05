@@ -4,7 +4,7 @@ import { File, IFile } from '../model/file.model.js';
 import { isProject } from '../service/project.service.js';
 import { unlinkFiles } from '../utilities/unlinkFiles.js';
 import * as fileService from '../service/file.service.js';
-import config from '../config/index.js';
+import { config } from '../config/index.js';
 
 // const createPublic = async (req: Request, res: Response) => {
 //   const { project }: { project: string } = req.body;
