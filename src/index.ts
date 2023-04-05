@@ -3,7 +3,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import fileRoutes from './routes/file.routes.js';
 import projectRoutes from './routes/project.routes.js';
-import config from './config/index.js';
+import { config } from './config/index.js';
 import path from 'path';
 
 import mongodb from './utilities/mongodb.js';
