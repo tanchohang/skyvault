@@ -3,6 +3,7 @@ public/
 uploads/
 dist/
 nginx/letsencrypt/
+logs/
 
 
 .env

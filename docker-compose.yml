@@ -13,11 +13,12 @@ services:
       - PORT=3500
       - NODE_ENV=production
       - BASE_URL=https://api.skyvault.tanchohang.dev
+    user: "node:node"
 
     volumes:
       - ./uploads:/usr/app/uploads
       - ./public/uploads:/usr/app/public/uploads
-      - ./errors.log:/usr/app/errors.log
+      - ./logs:/usr/app/logs
   skyvault-client:
     container_name: skyvault-client
     restart: unless-stopped

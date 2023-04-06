@@ -16,8 +16,8 @@ const devLogger = createLogger({
 const prodLogger = createLogger({
   transports: [
     new transports.Console(),
-    new transports.File({ filename: 'errors.log', level: 'error' }),
-    new transports.File({ filename: 'access.log', level: 'info' }),
+    new transports.File({ filename: 'logs/errors.log', level: 'error' }),
+    new transports.File({ filename: 'logs/access.log', level: 'info' }),
   ],
   format: format.combine(format.timestamp(), format.errors({ stack: true }), format.json()),
 });
