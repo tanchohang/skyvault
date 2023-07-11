@@ -1,8 +1,3 @@
-dist
-public
-uploads
-
-
 .git/
 .gitignore
 .dockerignore
