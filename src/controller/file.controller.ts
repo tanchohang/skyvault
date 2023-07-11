@@ -120,7 +120,7 @@ export const upload = async (req: Request, res: Response, next: NextFunction) =>
             fileName: file.filename,
             originalName: file.originalname,
             mimeType: file.mimetype,
-            link: [config.base_url, 'files', file.filename].join('/'),
+            link: [config.base_url, file.path].join('/'),
             project: project,
             user: req.user_id,
           } as IFile)
@@ -136,11 +136,14 @@ export const upload = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 export const sendFile = async (req: Request, res: Response, next: NextFunction) => {
-  const file = await fileService.sendFile({ uid: req.user_id, filename: req.params.filename });
-  if (file.public) res.sendFile(file.path, { root: `uploads/${req.user_id}` });
-  else {
-    res.sendFile(file.path, { root: `uploads/${req.user_id}` });
-  }
+  console.log('sendfile');
+
+  // const file = await fileService.sendFile({ uid: req.user_id, filename: req.params.filename });
+  // if (file.public) res.sendFile(file.path, { root: `uploads/${req.user_id}` });
+  // else {
+  //   console.log('sendfile');
+  //   res.sendFile(file.path, { root: `uploads/${req.user_id}` });
+  // }
 };
 
 export const readAllFiles = async (req: Request, res: Response, next: NextFunction) => {

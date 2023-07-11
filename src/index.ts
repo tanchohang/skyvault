@@ -10,6 +10,7 @@ import mongodb from './utilities/mongodb.js';
 import { errorHandler } from './middleware/errorhandler.middleware.js';
 
 import { logger } from './logger/index.js';
+import { authenticatedUser } from './middleware/auth.middleware.js';
 
 const app: Application = express();
 const __dirname = path.resolve();
@@ -25,6 +26,17 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use(express.static(path.join(__dirname, 'public/uploads')));
+
+app.use(
+  '/uploads',
+  // authenticatedUser,
+  // (req, res, next) => {
+  //   console.log(req.user_id);
+  //   next();
+  // },
+  express.static('uploads')
+);
+
 ///routes
 app.use(authRoutes);
 app.use(fileRoutes);
