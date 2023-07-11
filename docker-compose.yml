@@ -18,6 +18,7 @@ services:
     volumes:
       - ./uploads:/usr/app/uploads
       - ./public/uploads:/usr/app/public/uploads
+      - ./dist:/usr/app/dist
       - ./logs:/usr/app/logs
   skyvault-client:
     container_name: skyvault-client
