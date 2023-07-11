@@ -8,21 +8,21 @@ WORKDIR /usr/app
 
 # Copy package.json and package-lock.json before other files
 # Utilise Docker cache to save re-installing dependencies if unchanged
-COPY ./package*.json ./
-COPY yarn.lock ./
+# COPY ./package*.json ./
+# COPY yarn.lock ./
 
-RUN rm -rf dist
+# RUN rm -rf dist
 
 
 # Install dependencies
-RUN yarn install
+# RUN yarn install
 
 
 # Copy all files
-COPY ./ ./
+COPY dist dist
 
 # Build app
-RUN yarn build
+# RUN yarn build
 
 
 # Run container as non-root (unprivileged) user
