@@ -27,7 +27,8 @@ COPY dist dist
 
 # Run container as non-root (unprivileged) user
 # The node user is provided in the Node.js Alpine base image
-# RUN mkdir ./uploads
+RUN mkdir ./uploads
+RUN mkdir ./public/uploads
 # RUN chown node ./uploads
 USER node
 
