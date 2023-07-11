@@ -18,6 +18,13 @@ app.use((req, res, next) => {
     next();
 });
 app.use(express.static(path.join(__dirname, 'public/uploads')));
+app.use('/uploads', 
+// authenticatedUser,
+// (req, res, next) => {
+//   console.log(req.user_id);
+//   next();
+// },
+express.static('uploads'));
 ///routes
 app.use(authRoutes);
 app.use(fileRoutes);
